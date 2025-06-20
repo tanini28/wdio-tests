@@ -1,0 +1,142 @@
+Приклади тест кейсів і скриптів
+ 1. Successful user login
+Title: Successful login with valid credentials
+
+Assumptions: User has a valid GitHub account
+
+Steps:
+
+1. Go to https://github.com/login
+
+2. Enter the correct login in the "Username or email address" field
+
+3. Enter the correct password in the "Password" field
+
+4. Click the "Login" button
+
+Expected result:
+The user will be redirected to their account, the profile menu will appear in the top bar.
+
+describe('GitHub Login', () => {
+  it('should login with valid credentials', async () => {
+    await browser.url('https://github.com/login');
+    await $('#login_field').setValue('validUsername');
+    await $('#password').setValue('validPassword');
+    await $('input[type="submit"]').click();
+    await expect($('.Header-link')).toBeDisplayed();
+  });
+});
+
+
+2. Login error with incorrect password
+Title: Recent login with incorrect password
+
+Assumptions: User has a GitHub account
+
+Steps:
+
+1. Go to https://github.com/login
+
+2. Enter the correct login
+
+3. Enter the incorrect password
+
+4. Click "Login"
+
+Expected result:
+A login error message appears: "Invalid username or password."
+
+describe('GitHub Invalid Login', () => {
+  it('should show error with invalid password', async () => {
+    await browser.url('https://github.com/login');
+    await $('#login_field').setValue('validUsername');
+    await $('#password').setValue('wrongPassword');
+    await $('input[type="submit"]').click();
+    await expect($('.flash-error')).toBeDisplayed();
+  });
+});
+
+ 3. Search for a repository by keyword
+Title: Search for a public repository by keyword
+
+Assignments: User does not have to be logged in
+
+Steps:
+
+1. Open https://github.com
+
+2. Click on the search field (in the top bar)
+
+3. Type "webdriverio"
+
+4. Press Enter
+
+Expected result:
+The webdriverio/webdriverio repository will appear in the list of results.
+
+describe('GitHub Repository Search', () => {
+  it('should find repository by keyword', async () => {
+    await browser.url('https://github.com/');
+    await $('.header-search-button').click();
+    await $('[data-target="query-builder.searchInput"]').setValue('webdriverio');
+    await browser.keys('Enter');
+    await expect($('a[href*="webdriverio/webdriverio"]')).toBeDisplayed();
+  });
+});
+
+
+4. Displaying README in Repository
+Title: Displaying README.md on Repository Page
+
+Assumptions: The repository has a README.md file
+
+Steps:
+
+1. Open https://github.com/webdriverio/webdriverio
+
+2. Scroll to the sections below the file list
+
+Expected Result:
+
+The README file is displayed in the appropriate block of the page.
+describe('GitHub Repo README', () => {
+  it('should display README file in repo', async () => {
+    await browser.url('https://github.com/webdriverio/webdriverio');
+    const readme = await $('#readme');
+    await expect(readme).toBeDisplayed();
+  });
+});
+
+
+ 5. Успішний вихід із безкоштовного запису
+Назва: Вихід користувача з облікового запису GitHub
+
+Передумови: Користувач має дійсний обліковий запис і увійшов до системи
+
+Кроки:
+
+1. Відкрити https://github.com
+
+2. Натисніть на аватар у правому верхньому куті
+
+3. Вибрати пункт «Вийти»
+
+4. Підтвердити вихід (якщо потрібно)
+
+Очікуваний результат:
+Користувач перенаправлений на головну сторінку. У верхній панелі з'являється посилання "Увійти".
+
+describe('GitHub Logout', () => {
+  it('should logout successfully', async () => {
+    await browser.url('https://github.com/login');
+    await $('#login_field').setValue('validUsername');
+    await $('#password').setValue('validPassword');
+    await $('input[type="submit"]').click();
+
+    await $('.Header-link').click(); // Клік по аватару
+    await $('form.logout-form button[type="submit"]').click();
+    await expect($('a[href="/login"]')).toBeDisplayed(); // Перевірка що з’явився лінк входу
+  });
+});
+
+
